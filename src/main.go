@@ -1,0 +1,52 @@
+package main
+
+import (
+	"errors"
+	"fmt"
+	"os"
+	"time"
+)
+
+func main() {
+	params, err := parseArgs()
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, err.Error())
+		usage()
+		os.Exit(3)
+	}
+
+	tape, err := NewTape(params.TzxTapeInputFile)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, err.Error()+"\n")
+		usage()
+		os.Exit(4)
+	}
+
+	for _, infoLine := range tape.Info() {
+		fmt.Println(infoLine)
+	}
+
+	start := time.Now()
+	samples := tape.Samples(44100, 8)
+	end := time.Now()
+	fmt.Printf("Generated %d samples in %s", len(samples), end.Sub(start))
+	file := "test.wav"
+	writeToWavFile(file, 44100, 8, samples)
+}
+
+func parseArgs() (*Parameters, error) {
+	args := os.Args
+	params := Parameters{}
+
+	if len(args) < 1 {
+		return nil, errors.New("no TZX tape input file specified")
+	}
+
+	params.TzxTapeInputFile = args[1]
+	return &params, nil
+}
+
+func usage() {
+	fmt.Println("")
+	fmt.Println("Usage: tzx-player <input-file>.(tzx|cdt)")
+}
