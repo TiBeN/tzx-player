@@ -30,23 +30,24 @@ func main() {
 	samples := tape.Samples(44100, 8)
 	end := time.Now()
 	fmt.Printf("Generated %d samples in %s", len(samples), end.Sub(start))
-	file := "test.wav"
-	writeToWavFile(file, 44100, 8, samples)
+
+	writeToWavFile(params.OutputFile, 44100, 8, samples)
 }
 
 func parseArgs() (*Parameters, error) {
 	args := os.Args
 	params := Parameters{}
 
-	if len(args) < 1 {
+	if len(args) != 3 {
 		return nil, errors.New("no TZX tape input file specified")
 	}
 
 	params.TzxTapeInputFile = args[1]
+	params.OutputFile = args[2]
 	return &params, nil
 }
 
 func usage() {
 	fmt.Println("")
-	fmt.Println("Usage: tzx-player <input-file>.(tzx|cdt)")
+	fmt.Println("Usage: tzx-player <input-file>.(tzx|cdt) <output-file>.wav")
 }
