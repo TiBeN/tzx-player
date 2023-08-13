@@ -1,8 +1,9 @@
-package main
+package tape
 
 import (
 	"errors"
 	"fmt"
+	"github.com/TiBeN/tzx-player/tape/block"
 	"io"
 	"os"
 )
@@ -11,7 +12,7 @@ const TzxSignature = "ZXTape!"
 
 type Tape struct {
 	Header Header
-	Blocks []Block
+	Blocks []block.Block
 }
 
 type Header struct {
@@ -42,16 +43,16 @@ func NewTape(tzxFile string) (*Tape, error) {
 func (t *Tape) Info() []string {
 	infos := make([]string, len(t.Blocks)+1)
 	infos[0] = fmt.Sprintf("TZX tape, version %d.%d", t.Header.MajorVersion, t.Header.MinorVersion)
-	for blockNb, block := range t.Blocks {
-		infos[blockNb+1] = fmt.Sprintf("Block %d: %s %s", blockNb, block.Name(), block.Info())
+	for nb, b := range t.Blocks {
+		infos[nb+1] = fmt.Sprintf("Block %d: %s %s", nb, b.Name(), b.Info())
 	}
 	return infos
 }
 
 func (t *Tape) Samples(sampleRate int, bitDepth int) []byte {
 	samples := make([]byte, 0)
-	for _, block := range t.Blocks {
-		samples = append(samples, block.Samples(sampleRate, bitDepth)...)
+	for _, b := range t.Blocks {
+		samples = append(samples, b.Samples(sampleRate, bitDepth)...)
 	}
 	return samples
 }
@@ -83,11 +84,11 @@ func (t *Tape) readBlocks(tzxFile *os.File) error {
 		if _, err := tzxFile.Read(blockId); err == io.EOF {
 			break
 		}
-		block, err := NewBlock(blockId[0], tzxFile)
+		b, err := block.NewBlock(blockId[0], tzxFile)
 		if err != nil {
 			return err
 		}
-		t.Blocks = append(t.Blocks, block)
+		t.Blocks = append(t.Blocks, b)
 	}
 	return nil
 }

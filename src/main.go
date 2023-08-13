@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/TiBeN/tzx-player/tape"
 	"os"
 	"time"
 )
@@ -15,19 +16,19 @@ func main() {
 		os.Exit(3)
 	}
 
-	tape, err := NewTape(params.TzxTapeInputFile)
+	t, err := tape.NewTape(params.TzxTapeInputFile)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, err.Error()+"\n")
 		usage()
 		os.Exit(4)
 	}
 
-	for _, infoLine := range tape.Info() {
+	for _, infoLine := range t.Info() {
 		fmt.Println(infoLine)
 	}
 
 	start := time.Now()
-	samples := tape.Samples(44100, 8)
+	samples := t.Samples(44100, 8)
 	end := time.Now()
 	fmt.Printf("Generated %d samples in %s", len(samples), end.Sub(start))
 
