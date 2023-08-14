@@ -1,4 +1,4 @@
-package main
+package tape
 
 import (
 	"encoding/binary"

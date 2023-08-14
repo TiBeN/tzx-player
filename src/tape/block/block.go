@@ -5,6 +5,7 @@ import (
 	"os"
 )
 
+// Block holds information and content of a TZX tape data block
 type Block interface {
 	// Id returns the identifier of this block
 	Id() byte
