@@ -36,7 +36,7 @@ func (c *Convert) Exec(service *tape.Service, args []string) error {
 	samplingRate := ConvertDefaultSamplingRate
 	bitDepth := ConvertDefaultBitDepth
 
-	// Parse args here
+	// Parse args
 	for i := 0; i < len(args); i++ {
 		switch args[i] {
 		case "-s":
