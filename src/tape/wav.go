@@ -37,7 +37,7 @@ func writeToWavFile(filename string, samplerate int, bitdepth int, samples []byt
 	dataSize := uint32(len(samples) * 2) //DataSize
 	dataSizeBytes := make([]byte, 4)
 	binary.LittleEndian.PutUint32(dataSizeBytes, dataSize)
-	f.Write([]byte{0x9c, 0x65, 0xd9, 0x02})
+	f.Write(dataSizeBytes)
 
 	samples16bytes := make([]byte, 0)
 	for _, sample := range samples {
