@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 	"github.com/TiBeN/tzx-player/tape"
 	"strconv"
@@ -41,11 +42,11 @@ func (c *Convert) Exec(service *tape.Service, args []string) error {
 		switch args[i] {
 		case "-s":
 			if i == len(args)-1 {
-				return fmt.Errorf("missing -s argument")
+				return errors.New("missing -s argument")
 			}
 			samplingRate, err = strconv.Atoi(args[i+1])
 			if err != nil {
-				return fmt.Errorf("-s argument is not a valid number")
+				return errors.New("-s argument is not a valid number")
 			}
 			i++
 		case "-b":
@@ -54,7 +55,7 @@ func (c *Convert) Exec(service *tape.Service, args []string) error {
 			}
 			bitDepth, err = strconv.Atoi(args[i+1])
 			if err != nil || (bitDepth != 8 && bitDepth != 16) {
-				return fmt.Errorf("-s argument is not a valid number (8 or 16 supported)")
+				return errors.New("-s argument is not a valid number (8 or 16 supported)")
 			}
 			i++
 		default:

@@ -29,3 +29,11 @@ func (s *Service) ConvertToWavFile(tzxFile string, outputFile string, samplingRa
 
 	return wavWriter.Close()
 }
+
+func (s *Service) Info(tzxFile string) ([]string, error) {
+	tape, err := NewTape(tzxFile)
+	if err != nil {
+		return nil, err
+	}
+	return tape.Info(), nil
+}

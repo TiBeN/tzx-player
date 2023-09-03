@@ -16,6 +16,7 @@ func NewCli(tapeService *tape.Service) *Cli {
 		tapeService: tapeService,
 		commands: []Command{
 			&Convert{},
+			&Info{},
 		},
 	}
 }
