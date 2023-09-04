@@ -39,15 +39,21 @@ func (p *PulseSequence) Info() string {
 	return fmt.Sprintf("[pulses  nb: %d]", p.pulsesNb)
 }
 
-func (p *PulseSequence) Samples(sampleRate int, bitDepth int) []byte {
-	samples := make([]byte, 0)
-	lowLevel := true
+func (p *PulseSequence) Pulses() []Pulse {
+	pulses := make([]Pulse, 0)
+	level := false
 
 	for i := 0; i < len(p.pulsesLengths); i = i + 2 {
-		pulseLength := int(binary.LittleEndian.Uint16(p.pulsesLengths[i : i+2]))
-		samples = append(samples, GeneratePulseSamples(pulseLength, sampleRate, bitDepth, lowLevel)...)
-		lowLevel = !lowLevel
+		pulses = append(pulses, Pulse{
+			Length: int(binary.LittleEndian.Uint16(p.pulsesLengths[i : i+2])),
+			Level:  level,
+		})
+		level = !level
 	}
 
-	return samples
+	return pulses
+}
+
+func (p *PulseSequence) PauseDuration() int {
+	return 0
 }

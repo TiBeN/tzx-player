@@ -39,6 +39,10 @@ func (g *GroupStart) Info() string {
 	return fmt.Sprintf("[name: %s, length: %d]", g.name, g.nameLength)
 }
 
-func (g *GroupStart) Samples(sampleRate int, bitDepth int) []byte {
-	return make([]byte, 0)
+func (g *GroupStart) Pulses() []Pulse {
+	return make([]Pulse, 0)
+}
+
+func (g *GroupStart) PauseDuration() int {
+	return 0
 }

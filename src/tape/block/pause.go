@@ -32,6 +32,10 @@ func (p *Pause) Info() string {
 	return fmt.Sprintf("[duration: %dms]", p.pauseDuration)
 }
 
-func (p *Pause) Samples(sampleRate int, bitDepth int) []byte {
-	return GeneratePause(p.pauseDuration, sampleRate, bitDepth)
+func (p *Pause) Pulses() []Pulse {
+	return make([]Pulse, 0)
+}
+
+func (p *Pause) PauseDuration() int {
+	return p.pauseDuration
 }

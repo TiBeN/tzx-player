@@ -77,27 +77,31 @@ func (p *PureDataBlock) Info() string {
 	)
 }
 
-func (p *PureDataBlock) Samples(sampleRate int, bitDepth int) []byte {
-	samples := make([]byte, 0)
-	lowLevel := true
+func (p *PureDataBlock) Pulses() []Pulse {
+	pulses := make([]Pulse, 0)
 
-	// Generate data
 	for _, dataByte := range p.data {
-
 		for i := 128; i >= 1; i = i / 2 { // Iterate over every bit
 			pulseLength := p.zeroBitPulseLength
 			if int(dataByte)&i > 0 {
 				pulseLength = p.oneBitPulseLength
 			}
-			samples = append(samples, GeneratePulseSamples(pulseLength, sampleRate, bitDepth, lowLevel)...)
-			lowLevel = !lowLevel
-			samples = append(samples, GeneratePulseSamples(pulseLength, sampleRate, bitDepth, lowLevel)...)
-			lowLevel = !lowLevel
+			pulses = append(pulses, []Pulse{
+				{
+					Length: pulseLength,
+					Level:  false,
+				},
+				{
+					Length: pulseLength,
+					Level:  true,
+				},
+			}...)
 		}
 	}
 
-	// Generate after block pause
-	samples = append(samples, GeneratePause(p.pauseAfterBlock, sampleRate, bitDepth)...)
+	return pulses
+}
 
-	return samples
+func (p *PureDataBlock) PauseDuration() int {
+	return p.pauseAfterBlock
 }

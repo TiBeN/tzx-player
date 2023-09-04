@@ -40,16 +40,18 @@ func (p *PureTone) Info() string {
 	return fmt.Sprintf("[pulse length: %d, pulses number: %d]", p.onePulseLength, p.pulsesNb)
 }
 
-func (p *PureTone) Samples(sampleRate int, bitDepth int) []byte {
-	samples := make([]byte, 0)
+func (p *PureTone) Pulses() []Pulse {
+	pulses := make([]Pulse, 0)
+	level := false
 
-	// Generate pilot
-	lowLevel := true
 	for i := 0; i < p.pulsesNb; i++ {
-		pulseSamples := GeneratePulseSamples(p.onePulseLength, sampleRate, bitDepth, lowLevel)
-		samples = append(samples, pulseSamples...)
-		lowLevel = !lowLevel
+		pulses = append(pulses, Pulse{Length: p.onePulseLength, Level: level})
+		level = !level
 	}
 
-	return samples
+	return pulses
+}
+
+func (p *PureTone) PauseDuration() int {
+	return 0
 }

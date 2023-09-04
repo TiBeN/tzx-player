@@ -21,9 +21,19 @@ type Block interface {
 	// Info returns information about this block
 	Info() string
 
-	// Samples Generates and returns audio PCM samples
-	// for this block
-	Samples(sampleRate int, bitDepth int) []byte
+	// Pulses generates and returns the pulses of this block
+	Pulses() []Pulse
+
+	// PauseDuration return the trailing pause duration of this block in ms
+	PauseDuration() int
+}
+
+type Pulse struct {
+	// Length of the pulse in T state per second
+	Length int
+
+	// Low of High level (false = low, true = high)
+	Level bool
 }
 
 func NewBlock(id byte, tzxFile *os.File) (Block, error) {

@@ -6,6 +6,10 @@ import (
 	"os"
 )
 
+const StandardPilotToneLength = 2168
+const StandardZeroBitPulseLength = 855
+const StandardOneBitPulseLength = 1710
+
 // StandardSpeedDataBlock - ID 10
 type StandardSpeedDataBlock struct {
 	pauseAfterBlock int
@@ -55,49 +59,63 @@ func (s *StandardSpeedDataBlock) Info() string {
 	)
 }
 
-func (s *StandardSpeedDataBlock) Samples(sampleRate int, bitDepth int) []byte {
-	samples := make([]byte, 0)
-	pilotToneLength := 2168
-	zeroBitPulseLength := 855
-	oneBitPulseLength := 1710
+func (s *StandardSpeedDataBlock) Pulses() []Pulse {
+	pulses := make([]Pulse, 0)
+	level := false
 
-	// Generate pilot
-	lowLevel := true
-	for i := 0; i < pilotToneLength; i++ {
-		pulseSamples := GeneratePulseSamples(oneBitPulseLength, sampleRate, bitDepth, lowLevel)
-		samples = append(samples, pulseSamples...)
-		lowLevel = !lowLevel
+	// Generate pilot tone
+	for i := 0; i < StandardPilotToneLength; i++ {
+		pulses = append(pulses, Pulse{Length: StandardOneBitPulseLength, Level: level})
+		level = !level
 	}
-	samples = append(samples, GeneratePulseSamples(zeroBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-	lowLevel = !lowLevel
-	samples = append(samples, GeneratePulseSamples(zeroBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-	lowLevel = !lowLevel
+	pulses = append(pulses, []Pulse{
+		{
+			Length: StandardZeroBitPulseLength,
+			Level:  level,
+		},
+		{
+			Length: StandardZeroBitPulseLength,
+			Level:  !level,
+		},
+	}...)
 
 	// Generate data
 	for _, dataByte := range s.data {
-
 		for i := 128; i >= 1; i = i / 2 { // Iterate over every bit
-			pulseLength := zeroBitPulseLength
+			pulseLength := StandardZeroBitPulseLength
 			if int(dataByte)&i > 0 {
-				pulseLength = oneBitPulseLength
+				pulseLength = StandardOneBitPulseLength
 			}
-			samples = append(samples, GeneratePulseSamples(pulseLength, sampleRate, bitDepth, lowLevel)...)
-			lowLevel = !lowLevel
-			samples = append(samples, GeneratePulseSamples(pulseLength, sampleRate, bitDepth, lowLevel)...)
-			lowLevel = !lowLevel
+			pulses = append(pulses, []Pulse{
+				{
+					Length: pulseLength,
+					Level:  level,
+				},
+				{
+					Length: pulseLength,
+					Level:  !level,
+				},
+			}...)
 		}
 	}
 
 	// Generate trailer
 	for i := 0; i < 32; i++ {
-		samples = append(samples, GeneratePulseSamples(oneBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-		lowLevel = !lowLevel
-		samples = append(samples, GeneratePulseSamples(oneBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-		lowLevel = !lowLevel
+		pulses = append(pulses, []Pulse{
+			{
+				Length: StandardOneBitPulseLength,
+				Level:  level,
+			},
+			{
+				Length: StandardOneBitPulseLength,
+				Level:  !level,
+			},
+		}...)
 	}
 
-	// Generate after block pause
-	samples = append(samples, GeneratePause(s.pauseAfterBlock, sampleRate, bitDepth)...)
+	return pulses
+}
 
-	return samples
+func (s *StandardSpeedDataBlock) PauseDuration() int {
+	return s.pauseAfterBlock
 }

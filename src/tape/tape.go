@@ -49,14 +49,6 @@ func (t *Tape) Info() []string {
 	return infos
 }
 
-func (t *Tape) Samples(sampleRate int, bitDepth int) []byte {
-	samples := make([]byte, 0)
-	for _, b := range t.Blocks {
-		samples = append(samples, b.Samples(sampleRate, bitDepth)...)
-	}
-	return samples
-}
-
 // Read header data from TZX file
 func (t *Tape) readHeader(tzxFile *os.File) error {
 	headerBytes := make([]byte, 10)

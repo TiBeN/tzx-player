@@ -111,46 +111,63 @@ func (t *TurboSpeedDataBlock) Info() string {
 	)
 }
 
-func (t *TurboSpeedDataBlock) Samples(sampleRate int, bitDepth int) []byte {
-	samples := make([]byte, 0)
+func (t *TurboSpeedDataBlock) Pulses() []Pulse {
+	pulses := make([]Pulse, 0)
+	level := false
 
-	// Generate pilot
-	lowLevel := true
+	// Generate pilot tone
 	for i := 0; i < t.pilotToneLength; i++ {
-		pulseSamples := GeneratePulseSamples(t.pilotPulseLength, sampleRate, bitDepth, lowLevel)
-		samples = append(samples, pulseSamples...)
-		lowLevel = !lowLevel
+		pulses = append(pulses, Pulse{Length: t.pilotPulseLength, Level: level})
+		level = !level
 	}
-	samples = append(samples, GeneratePulseSamples(t.zeroBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-	lowLevel = !lowLevel
-	samples = append(samples, GeneratePulseSamples(t.zeroBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-	lowLevel = !lowLevel
+	pulses = append(pulses, []Pulse{
+		{
+			Length: t.zeroBitPulseLength,
+			Level:  level,
+		},
+		{
+			Length: t.zeroBitPulseLength,
+			Level:  !level,
+		},
+	}...)
 
 	// Generate data
 	for _, dataByte := range t.data {
-
 		for i := 128; i >= 1; i = i / 2 { // Iterate over every bit
 			pulseLength := t.zeroBitPulseLength
 			if int(dataByte)&i > 0 {
 				pulseLength = t.oneBitPulseLength
 			}
-			samples = append(samples, GeneratePulseSamples(pulseLength, sampleRate, bitDepth, lowLevel)...)
-			lowLevel = !lowLevel
-			samples = append(samples, GeneratePulseSamples(pulseLength, sampleRate, bitDepth, lowLevel)...)
-			lowLevel = !lowLevel
+			pulses = append(pulses, []Pulse{
+				{
+					Length: pulseLength,
+					Level:  level,
+				},
+				{
+					Length: pulseLength,
+					Level:  !level,
+				},
+			}...)
 		}
 	}
 
 	// Generate trailer
 	for i := 0; i < 32; i++ {
-		samples = append(samples, GeneratePulseSamples(t.oneBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-		lowLevel = !lowLevel
-		samples = append(samples, GeneratePulseSamples(t.oneBitPulseLength, sampleRate, bitDepth, lowLevel)...)
-		lowLevel = !lowLevel
+		pulses = append(pulses, []Pulse{
+			{
+				Length: t.oneBitPulseLength,
+				Level:  level,
+			},
+			{
+				Length: t.oneBitPulseLength,
+				Level:  !level,
+			},
+		}...)
 	}
 
-	// Generate after block pause
-	samples = append(samples, GeneratePause(t.pauseAfterBlock, sampleRate, bitDepth)...)
+	return pulses
+}
 
-	return samples
+func (t *TurboSpeedDataBlock) PauseDuration() int {
+	return t.pauseAfterBlock
 }

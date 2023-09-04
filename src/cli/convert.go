@@ -54,8 +54,8 @@ func (c *Convert) Exec(service *tape.Service, args []string) error {
 				return fmt.Errorf("missing -b argument")
 			}
 			bitDepth, err = strconv.Atoi(args[i+1])
-			if err != nil || (bitDepth != 8 && bitDepth != 16) {
-				return errors.New("-s argument is not a valid number (8 or 16 supported)")
+			if err != nil {
+				return errors.New("-s argument is not a valid number")
 			}
 			i++
 		default:
@@ -67,5 +67,11 @@ func (c *Convert) Exec(service *tape.Service, args []string) error {
 		}
 	}
 
-	return service.ConvertToWavFile(tzxFile, outputFile, samplingRate, bitDepth)
+	generationTime, err := service.ConvertToWavFile(tzxFile, outputFile, samplingRate, bitDepth)
+
+	if err == nil {
+		fmt.Printf("Generation time: %s\n", generationTime)
+	}
+
+	return err
 }

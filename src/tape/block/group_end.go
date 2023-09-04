@@ -22,6 +22,10 @@ func (g *GroupEnd) Info() string {
 	return ""
 }
 
-func (g *GroupEnd) Samples(sampleRate int, bitDepth int) []byte {
-	return make([]byte, 0)
+func (g *GroupEnd) Pulses() []Pulse {
+	return make([]Pulse, 0)
+}
+
+func (g *GroupEnd) PauseDuration() int {
+	return 0
 }

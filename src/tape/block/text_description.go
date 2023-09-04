@@ -35,6 +35,10 @@ func (t *TextDescription) Info() string {
 	return fmt.Sprintf("[description: %s]", t.description)
 }
 
-func (t *TextDescription) Samples(sampleRate int, bitDepth int) []byte {
-	return make([]byte, 0)
+func (t *TextDescription) Pulses() []Pulse {
+	return make([]Pulse, 0)
+}
+
+func (t *TextDescription) PauseDuration() int {
+	return 0
 }
