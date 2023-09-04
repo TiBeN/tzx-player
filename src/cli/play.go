@@ -7,29 +7,29 @@ import (
 	"strconv"
 )
 
-type Convert struct {
+type Play struct {
 }
 
-func (c *Convert) Name() string {
-	return "convert"
+func (c *Play) Name() string {
+	return "play"
 }
 
-func (c *Convert) Description() string {
-	return "Convert TZX tape to an audio PCM Wav file"
+func (c *Play) Description() string {
+	return "Play a TZX tape"
 }
 
-func (c *Convert) Usage() string {
+func (c *Play) Usage() string {
 	usage := fmt.Sprintf("    Args:\n")
-	usage += fmt.Sprintf("      tzx-player convert INPUT_TZX_FILE OUTPUT_WAV_FILE\n")
+	usage += fmt.Sprintf("      tzx-player play INPUT_TZX_FILE\n")
 	usage += fmt.Sprintf("    Options:\n")
 	usage += fmt.Sprintf("      %-20sSampling rate (default: %d)\n", "-s int", ConvertDefaultSamplingRate)
 	usage += fmt.Sprintf("      %-20sBit depth (default: %d, possibles values: 8 or 16)\n", "-b int", ConvertDefaultBitDepth)
 	return usage
 }
 
-func (c *Convert) Exec(service *tape.Service, args []string) error {
+func (c *Play) Exec(service *tape.Service, args []string) error {
 	var tzxFile string
-	var outputFile string
+
 	var err error
 	samplingRate := ConvertDefaultSamplingRate
 	bitDepth := ConvertDefaultBitDepth
@@ -58,17 +58,9 @@ func (c *Convert) Exec(service *tape.Service, args []string) error {
 		default:
 			if tzxFile == "" {
 				tzxFile = args[i]
-			} else {
-				outputFile = args[i]
 			}
 		}
 	}
 
-	generationTime, err := service.ConvertToWavFile(tzxFile, outputFile, samplingRate, bitDepth)
-
-	if err == nil {
-		fmt.Printf("Generation time: %s\n", generationTime)
-	}
-
-	return err
+	return service.Play(tzxFile, samplingRate, bitDepth)
 }

@@ -6,6 +6,9 @@ import (
 	"os"
 )
 
+const ConvertDefaultSamplingRate = 44100
+const ConvertDefaultBitDepth = 8
+
 type Cli struct {
 	tapeService *tape.Service
 	commands    []Command
@@ -17,6 +20,7 @@ func NewCli(tapeService *tape.Service) *Cli {
 		commands: []Command{
 			&Convert{},
 			&Info{},
+			&Play{},
 		},
 	}
 }
