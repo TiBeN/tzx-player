@@ -6,6 +6,7 @@ import (
 )
 
 // Block holds information and content of a TZX tape data block
+// @TODO: Implements others blocks types
 type Block interface {
 	// Id returns the identifier of this block
 	Id() byte

@@ -4,7 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/TiBeN/tzx-player/tape"
+	"github.com/eiannone/keyboard"
+	"go.bug.st/serial"
+	"log"
+	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
+	"time"
 )
 
 type Play struct {
@@ -62,5 +69,102 @@ func (c *Play) Exec(service *tape.Service, args []string) error {
 		}
 	}
 
-	return service.Play(tzxFile, samplingRate, bitDepth)
+	player, err := service.Play(tzxFile, samplingRate, bitDepth)
+	if err != nil {
+		return err
+	}
+
+	// Infos go routine here
+	sigs := make(chan os.Signal, 1)
+
+	go func() {
+		infosTicker := time.NewTicker(time.Duration(60) * time.Millisecond)
+		for {
+			<-infosTicker.C
+			playerInfos := player.Infos()
+			if !playerInfos.Playing {
+				sigs <- syscall.SIGTERM
+			}
+			fmt.Printf("\rPlaying: %v - %d / %d", !playerInfos.Pause, playerInfos.CurrentByte, playerInfos.TotalBytes)
+		}
+	}()
+
+	go func() {
+		if err := keyboard.Open(); err != nil {
+			panic(err)
+		}
+		defer func() {
+			_ = keyboard.Close()
+		}()
+		for {
+			_, key, err := keyboard.GetKey()
+			if err != nil {
+				panic(err)
+			}
+			if key == keyboard.KeySpace {
+				player.TogglePause()
+			}
+			if key == keyboard.KeyArrowLeft {
+				player.Rewind()
+			}
+			if key == keyboard.KeyArrowRight {
+				player.FastForward()
+			}
+			if key == keyboard.KeyCtrlC {
+				sigs <- syscall.SIGTERM
+				break
+			}
+		}
+	}()
+
+	// GPIO remote control handling
+	go func() {
+		mode := &serial.Mode{
+			BaudRate: 19200,
+		}
+		port, err := serial.Open("/dev/ttyACM0", mode)
+		if err != nil {
+			panic(err)
+		}
+
+		command := []byte("gpio read 1\n\r")
+		state := 0
+		for {
+			_, err = port.Write(command)
+			if err != nil {
+				panic(err)
+			}
+			buff := make([]byte, 100)
+			for {
+				n, err := port.Read(buff)
+				if err != nil {
+					log.Fatal(err)
+				}
+				if n < len(buff) {
+					break
+				}
+			}
+			val, err := strconv.Atoi(string(buff[len(command)+1 : len(command)+2]))
+			if err != nil {
+				panic(err)
+			}
+
+			if val != state {
+				state = val
+				if state == 1 {
+					player.Pause()
+				} else {
+					player.Resume()
+				}
+			}
+		}
+
+	}()
+
+	// Lock main thread, handle term signals
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	<-sigs
+
+	fmt.Print("\n")
+	return nil
 }
