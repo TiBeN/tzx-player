@@ -70,6 +70,10 @@ func (r *Reader) generateSamples() {
 		samples = append(samples, r.pauseToSamples(b.PauseDuration())...)
 	}
 
+	// Prevent tapes without trailing pause to load
+	// @TODO: this is a workaround, fix why it does not read up to the end
+	samples = append(samples, r.pauseToSamples(2000)...)
+
 	r.samples = bytes.NewReader(samples)
 }
 
