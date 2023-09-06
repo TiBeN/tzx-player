@@ -128,7 +128,7 @@ func (c *Play) Exec(service *tape.Service, args []string) error {
 	}()
 	go func() {
 		for {
-			_, key, err := keyboard.GetKey()
+			char, key, err := keyboard.GetKey()
 			if err != nil {
 				panic(err)
 			}
@@ -140,6 +140,14 @@ func (c *Play) Exec(service *tape.Service, args []string) error {
 			}
 			if key == keyboard.KeyArrowRight {
 				player.FastForward()
+			}
+			if char == 's' {
+				player.SaveCurrentPos()
+			}
+			if char == 'g' {
+				if err := player.GoToSavedPos(); err != nil {
+					panic(err)
+				}
 			}
 			if key == keyboard.KeyCtrlC {
 				sigs <- syscall.SIGTERM

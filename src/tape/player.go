@@ -6,10 +6,11 @@ import (
 )
 
 type Player struct {
-	reader  *Reader
-	playing bool
-	pause   bool
-	stop    bool
+	reader   *Reader
+	playing  bool
+	pause    bool
+	stop     bool
+	savedPos int64
 }
 
 type PlayerInfos struct {
@@ -124,6 +125,11 @@ func (p *Player) FastForward() {
 	_, _ = p.reader.Seek(50000, 1)
 }
 
-// Counter reset
+func (p *Player) SaveCurrentPos() {
+	p.savedPos = p.reader.Pos()
+}
 
-// Seek to counter 0
+func (p *Player) GoToSavedPos() error {
+	_, err := p.reader.Seek(p.savedPos, 0)
+	return err
+}
