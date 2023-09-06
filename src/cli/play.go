@@ -85,10 +85,11 @@ func (c *Play) Exec(service *tape.Service, args []string) error {
 	if err != nil {
 		return err
 	}
+	defer player.Stop()
 
-	// Infos go routine here
 	sigs := make(chan os.Signal, 1)
 
+	// Display infos
 	go func() {
 		infosTicker := time.NewTicker(time.Duration(60) * time.Millisecond)
 		for {
@@ -118,13 +119,14 @@ func (c *Play) Exec(service *tape.Service, args []string) error {
 		}
 	}()
 
+	// Handle keyboard shortcuts
+	if err := keyboard.Open(); err != nil {
+		panic(err)
+	}
+	defer func() {
+		_ = keyboard.Close()
+	}()
 	go func() {
-		if err := keyboard.Open(); err != nil {
-			panic(err)
-		}
-		defer func() {
-			_ = keyboard.Close()
-		}()
 		for {
 			_, key, err := keyboard.GetKey()
 			if err != nil {

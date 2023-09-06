@@ -9,6 +9,7 @@ type Player struct {
 	reader  *Reader
 	playing bool
 	pause   bool
+	stop    bool
 }
 
 type PlayerInfos struct {
@@ -63,11 +64,11 @@ func (p *Player) Start() error {
 			}
 
 			_, err = p.reader.Read(buf)
-			if err == io.EOF {
-				break
-			}
 			if err = stream.Write(); err != nil {
 				//panic(err)
+			}
+			if err == io.EOF || p.stop {
+				break
 			}
 		}
 
@@ -98,7 +99,7 @@ func (p *Player) Resume() {
 }
 
 func (p *Player) Stop() {
-
+	p.stop = true
 }
 
 func (p *Player) Infos() PlayerInfos {
@@ -122,8 +123,6 @@ func (p *Player) Rewind() {
 func (p *Player) FastForward() {
 	_, _ = p.reader.Seek(50000, 1)
 }
-
-// Rewind / Advance
 
 // Counter reset
 
