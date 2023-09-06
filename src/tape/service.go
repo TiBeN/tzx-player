@@ -13,7 +13,7 @@ func NewService() *Service {
 }
 
 // ConvertToWavFile converts the given TZX tape file into an audio PCM WAV file
-func (s *Service) ConvertToWavFile(tzxFile string, outputFile string, samplingRate int, bitDepth int) (*time.Duration, error) {
+func (s *Service) ConvertToWavFile(tzxFile string, outputFile string, samplingRate int, bitDepth int, speedFactor float64) (*time.Duration, error) {
 	start := time.Now()
 
 	tape, err := NewTape(tzxFile)
@@ -21,7 +21,7 @@ func (s *Service) ConvertToWavFile(tzxFile string, outputFile string, samplingRa
 		return nil, err
 	}
 
-	tapeReader, err := NewReader(tape, samplingRate, bitDepth)
+	tapeReader, err := NewReader(tape, samplingRate, bitDepth, speedFactor)
 	if err != nil {
 		return nil, err
 	}
@@ -51,13 +51,13 @@ func (s *Service) Info(tzxFile string) ([]string, error) {
 	return tape.Info(), nil
 }
 
-func (s *Service) Play(tzxFile string, samplingRate int, bitDepth int) (*Player, error) {
+func (s *Service) Play(tzxFile string, samplingRate int, bitDepth int, speedFactor float64) (*Player, error) {
 	tape, err := NewTape(tzxFile)
 	if err != nil {
 		return nil, err
 	}
 
-	tapeReader, err := NewReader(tape, samplingRate, bitDepth)
+	tapeReader, err := NewReader(tape, samplingRate, bitDepth, speedFactor)
 	if err != nil {
 		return nil, err
 	}

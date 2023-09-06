@@ -22,9 +22,10 @@ type Reader struct {
 	samples      *bytes.Reader
 	SamplingRate int
 	bitDepth     int
+	speedFactor  float64
 }
 
-func NewReader(tape *Tape, samplingRate int, bitDepth int) (*Reader, error) {
+func NewReader(tape *Tape, samplingRate int, bitDepth int, speedFactor float64) (*Reader, error) {
 	bitDepthAllowed := false
 	for _, b := range AllowedBitDepths {
 		if b == bitDepth {
@@ -41,6 +42,7 @@ func NewReader(tape *Tape, samplingRate int, bitDepth int) (*Reader, error) {
 		tape:         tape,
 		SamplingRate: samplingRate,
 		bitDepth:     bitDepth,
+		speedFactor:  speedFactor,
 	}
 	r.generateSamples()
 	return r, nil
@@ -81,7 +83,7 @@ func (r *Reader) pulsesToSamples(pulses []block.Pulse) []byte {
 	samples := make([]byte, 0)
 
 	for _, pulse := range pulses {
-		nbSamples := int(math.Ceil((TStatePerSecond / (1.0 / float64(r.SamplingRate))) * float64(pulse.Length)))
+		nbSamples := int(math.Ceil(((TStatePerSecond * r.speedFactor) / (1.0 / float64(r.SamplingRate))) * float64(pulse.Length)))
 		pulseSamples := make([]byte, 0)
 		for i := 0; i < nbSamples; i++ {
 			pulseSamples = append(pulseSamples, r.sampleValue(pulse.Level)...)

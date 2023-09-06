@@ -8,6 +8,7 @@ import (
 
 const ConvertDefaultSamplingRate = 44100
 const ConvertDefaultBitDepth = 8
+const ConvertDefaultSpeedFactor = 1.0
 
 type Cli struct {
 	tapeService *tape.Service
