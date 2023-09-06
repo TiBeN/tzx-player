@@ -11,8 +11,9 @@ import (
 const TzxSignature = "ZXTape!"
 
 type Tape struct {
-	Header Header
-	Blocks []block.Block
+	Header   Header
+	Blocks   []block.Block
+	FileName string
 }
 
 type Header struct {
@@ -26,7 +27,9 @@ func NewTape(tzxFile string) (*Tape, error) {
 		return nil, err
 	}
 
-	tape := Tape{}
+	tape := Tape{
+		FileName: tzxFile,
+	}
 	if err := tape.readHeader(f); err != nil {
 		return nil, err
 	}

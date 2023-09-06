@@ -12,10 +12,15 @@ type Player struct {
 }
 
 type PlayerInfos struct {
-	Playing     bool
-	Pause       bool
-	CurrentByte int64
-	TotalBytes  int64
+	Playing      bool
+	Pause        bool
+	CurrentByte  int64
+	TotalBytes   int64
+	PosPercent   int64
+	PosSeconds   int64
+	TotalSeconds int64
+	FileName     string
+	BlockInfo    string
 }
 
 func NewPlayer(reader *Reader) *Player {
@@ -98,19 +103,16 @@ func (p *Player) Stop() {
 
 func (p *Player) Infos() PlayerInfos {
 	return PlayerInfos{
-		Playing:     p.playing,
-		Pause:       p.pause,
-		CurrentByte: p.reader.Pos(),
-		TotalBytes:  p.reader.Size(),
+		Playing:      p.playing,
+		Pause:        p.pause,
+		CurrentByte:  p.reader.Pos(),
+		TotalBytes:   p.reader.Size(),
+		PosPercent:   p.reader.PosPercent(),
+		PosSeconds:   p.reader.PosSeconds(),
+		TotalSeconds: p.reader.TotalSeconds(),
+		FileName:     p.reader.FileName(),
+		BlockInfo:    p.reader.BlockInfo(),
 	}
-	// file name
-	// counter [054]
-	// position time HH:mm:ss
-	// position percent
-	// block number
-	// block name
-
-	// Infos and time computing made the reader
 }
 
 func (p *Player) Rewind() {

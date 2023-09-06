@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"strconv"
 	"syscall"
 	"time"
@@ -96,7 +97,24 @@ func (c *Play) Exec(service *tape.Service, args []string) error {
 			if !playerInfos.Playing {
 				sigs <- syscall.SIGTERM
 			}
-			fmt.Printf("\rPlaying: %v - %d / %d", !playerInfos.Pause, playerInfos.CurrentByte, playerInfos.TotalBytes)
+
+			playStatus := "\u23F5"
+			if playerInfos.Pause {
+				playStatus = "\u23F8"
+			}
+
+			totalTime := time.Unix(playerInfos.TotalSeconds, 0)
+			currentTime := time.Unix(playerInfos.PosSeconds, 0)
+
+			fmt.Printf(
+				"\r\033[K%s %s - %s / %s (%d%%) - Block: %s",
+				playStatus,
+				filepath.Base(playerInfos.FileName),
+				currentTime.UTC().Format("15:04:05"),
+				totalTime.UTC().Format("15:04:05"),
+				playerInfos.PosPercent,
+				playerInfos.BlockInfo,
+			)
 		}
 	}()
 
