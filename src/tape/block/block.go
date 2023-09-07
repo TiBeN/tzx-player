@@ -61,6 +61,10 @@ func NewBlock(id byte, tzxFile *os.File) (Block, error) {
 		block = &GroupEnd{}
 	case 0x30:
 		block = &TextDescription{}
+	case 0x31:
+		block = &MessageBlock{}
+	case 0x33:
+		block = &HardwareType{}
 	default:
 		return nil, fmt.Errorf("unknown block id %x", id)
 	}
