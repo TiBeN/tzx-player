@@ -103,15 +103,17 @@ func (r *Reader) Seek(offset int64, whence int) (int64, error) {
 func (r *Reader) generateSamples() {
 	samples := make([]byte, 0)
 
+	// Add some silence at the beginning to prevent players to start too abruptly
+	samples = append(samples, r.pauseToSamples(500)...)
+
 	for _, b := range r.tape.Blocks {
 		r.blocksBytes = append(r.blocksBytes, BlockByte{blockByte: int64(len(samples)), blockName: b.Name()})
 		samples = append(samples, r.pulsesToSamples(b.Pulses())...)
 		samples = append(samples, r.pauseToSamples(b.PauseDuration())...)
 	}
 
-	// Prevent tapes without trailing pause to load
-	// @TODO: this is a workaround, fix why it does not read up to the end
-	samples = append(samples, r.pauseToSamples(2000)...)
+	// Add some silence in the end to prevent players to stop too abruptly
+	samples = append(samples, r.pauseToSamples(500)...)
 
 	r.samples = bytes.NewReader(samples)
 }
