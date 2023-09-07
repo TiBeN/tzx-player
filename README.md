@@ -14,8 +14,8 @@ Features:
 
 WIP state:
 
-- It only supports Amstrad CPC "CDT" files for now.
-- Not all the blocks types of the TZX specification are supported
+- Not all blocks types of the TZX specification are supported
+  (Most data related though, which make almost every Amstrad CPC cdt file to be read)
 - Tested on Linux only
 - Looking for a more standard interface for GPIO remote control feature. My current device, which is a 
   Numato Labs 8 channels, does not support standard kernel libgpiod framework and expose a proprietary 
