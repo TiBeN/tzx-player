@@ -51,6 +51,8 @@ func NewBlock(id byte, tzxFile *os.File) (Block, error) {
 		block = &PulseSequence{}
 	case 0x14:
 		block = &PureDataBlock{}
+	case 0x15:
+		block = &DirectRecording{}
 	case 0x20:
 		block = &Pause{}
 	case 0x21:

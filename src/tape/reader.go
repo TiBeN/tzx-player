@@ -82,6 +82,8 @@ func (r *Reader) FileName() string {
 	return r.tape.FileName
 }
 
+// @TODO: don't return formated data but data struct
+// @TODO: return the block id
 func (r *Reader) BlockInfo() string {
 	currentByteNb := r.Pos()
 	blockInfo := ""
