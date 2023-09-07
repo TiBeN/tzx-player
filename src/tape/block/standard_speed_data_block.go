@@ -67,16 +67,17 @@ func (s *StandardSpeedDataBlock) Pulses() []Pulse {
 	pulses := make([]Pulse, 0)
 	level := false
 
+	// Generate pilot tone
 	pilotToneLength := StandardHeaderPilotToneLength
 	if s.data[0] >= 128 {
 		pilotToneLength = StandardDataPilotToneLength
 	}
-
-	// Generate pilot tone
 	for i := 0; i < pilotToneLength; i++ {
 		pulses = append(pulses, Pulse{Length: StandardPilotPulseLength, Level: level})
 		level = !level
 	}
+
+	// Generate sync pulses
 	pulses = append(pulses, []Pulse{
 		{
 			Length: StandardFirstSyncPulseLength,
@@ -88,7 +89,7 @@ func (s *StandardSpeedDataBlock) Pulses() []Pulse {
 		},
 	}...)
 
-	// Generate data
+	// Generate data pulses
 	for _, dataByte := range s.data {
 		for i := 128; i >= 1; i = i / 2 { // Iterate over every bit
 			pulseLength := StandardZeroBitPulseLength

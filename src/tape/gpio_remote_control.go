@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+// GpioRemoteControl controls the play/pause status of the Player
+// according to the Amstrad CPC datacorder relay status by capturing the tension with a GPIO device.
+// This code is specific to the Numato Labs 8 channels GPIO module.
+// I'm looking in a more vendor-agnostic way to handle this.
 type GpioRemoteControl struct {
 	port     string
 	baudRate int
@@ -24,6 +28,7 @@ func NewGpioRemoteControl(port string, baudRate int, ioNb int, player *Player) *
 	}
 }
 
+// Start enable control of the player
 func (g *GpioRemoteControl) Start() error {
 	g.start = true
 
@@ -77,6 +82,7 @@ func (g *GpioRemoteControl) Start() error {
 	return nil
 }
 
+// Stop stops the control of the player and free GPIO serial file descriptor
 func (g *GpioRemoteControl) Stop() {
 	g.start = false
 }

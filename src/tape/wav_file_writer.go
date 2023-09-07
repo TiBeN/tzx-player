@@ -63,6 +63,7 @@ func (w *WavFileWriter) Close() (err error) {
 	return nil
 }
 
+// GenerateHeader generates Wav file header meta data
 func (w *WavFileWriter) GenerateHeader() []byte {
 	header := make([]byte, 44)
 	copy(header[0:4], "RIFF")

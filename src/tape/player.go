@@ -5,6 +5,7 @@ import (
 	"io"
 )
 
+// Player plays a TZX file as audio samples through the sound card
 type Player struct {
 	reader   *Reader
 	playing  bool
@@ -125,10 +126,17 @@ func (p *Player) FastForward() {
 	_, _ = p.reader.Seek(50000, 1)
 }
 
+// SaveCurrentPos saves the current position in memory.
+// This position can be seeked later using Player.GoToSavedPos()
+// This emulates a real Counter as seen on tape players and can be used to rewind the tape
+// at a specific position. Useful for multi-load levels games for example.
 func (p *Player) SaveCurrentPos() {
 	p.savedPos = p.reader.Pos()
 }
 
+// GoToSavedPos set the play position of the tape at the previously stored position
+// with Player.SaveCurrentPos. If no position was previously stored, it rewind the
+// tape to beginning.
 func (p *Player) GoToSavedPos() error {
 	_, err := p.reader.Seek(p.savedPos, 0)
 	return err

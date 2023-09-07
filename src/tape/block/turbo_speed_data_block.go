@@ -133,7 +133,7 @@ func (t *TurboSpeedDataBlock) Pulses() []Pulse {
 		},
 	}...)
 
-	// Generate data
+	// Generate data pulses
 	for _, dataByte := range t.data {
 		// @TODO: don't convert unused bits in last byte
 		for i := 128; i >= 1; i = i / 2 { // Iterate over every bit

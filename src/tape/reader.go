@@ -118,6 +118,7 @@ func (r *Reader) generateSamples() {
 	r.samples = bytes.NewReader(samples)
 }
 
+// pulsesToSamples encodes the given pulses as audio PCM samples.
 func (r *Reader) pulsesToSamples(pulses []block.Pulse) []byte {
 	samples := make([]byte, 0)
 
@@ -133,6 +134,7 @@ func (r *Reader) pulsesToSamples(pulses []block.Pulse) []byte {
 	return samples
 }
 
+// pauseToSamples generates an silence as audio PCM samples of given duration in ms
 func (r *Reader) pauseToSamples(duration int) []byte {
 	nbSamples := duration * (r.SamplingRate / 1000)
 	samples := make([]byte, 0)
@@ -142,6 +144,8 @@ func (r *Reader) pauseToSamples(duration int) []byte {
 	return samples
 }
 
+// sampleValue returns the audio PCM sample equivalent of a low level or high level
+// according to the
 func (r *Reader) sampleValue(level bool) []byte {
 	if r.bitDepth == 8 {
 		if !level {

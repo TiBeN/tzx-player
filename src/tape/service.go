@@ -43,6 +43,7 @@ func (s *Service) ConvertToWavFile(tzxFile string, outputFile string, samplingRa
 	return &end, nil
 }
 
+// Info returns information about a TZX tape file (version, blocks etc.)
 func (s *Service) Info(tzxFile string) ([]string, error) {
 	tape, err := NewTape(tzxFile)
 	if err != nil {
@@ -51,6 +52,7 @@ func (s *Service) Info(tzxFile string) ([]string, error) {
 	return tape.Info(), nil
 }
 
+// Play plays a TZX file through audio sound card
 func (s *Service) Play(tzxFile string, samplingRate int, bitDepth int, speedFactor float64) (*Player, error) {
 	tape, err := NewTape(tzxFile)
 	if err != nil {
