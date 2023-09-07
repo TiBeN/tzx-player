@@ -15,7 +15,6 @@ const StandardZeroBitPulseLength = 855
 const StandardOneBitPulseLength = 1710
 
 // StandardSpeedDataBlock - ID 10
-// @TODO: Seems wrong: PacMania does not load
 type StandardSpeedDataBlock struct {
 	pauseAfterBlock int
 	dataSize        int
