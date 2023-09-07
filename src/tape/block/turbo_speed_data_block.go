@@ -120,13 +120,15 @@ func (t *TurboSpeedDataBlock) Pulses() []Pulse {
 		pulses = append(pulses, Pulse{Length: t.pilotPulseLength, Level: level})
 		level = !level
 	}
+
+	// Generate sync pulses
 	pulses = append(pulses, []Pulse{
 		{
-			Length: t.zeroBitPulseLength,
+			Length: t.syncFirstPulseLength,
 			Level:  level,
 		},
 		{
-			Length: t.zeroBitPulseLength,
+			Length: t.syncSecondPulseLength,
 			Level:  !level,
 		},
 	}...)

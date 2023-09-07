@@ -6,11 +6,16 @@ import (
 	"os"
 )
 
-const StandardPilotToneLength = 2168
+const StandardHeaderPilotToneLength = 8063
+const StandardDataPilotToneLength = 3223
+const StandardPilotPulseLength = 2168
+const StandardFirstSyncPulseLength = 667
+const StandardSecondSyncPulseLength = 735
 const StandardZeroBitPulseLength = 855
 const StandardOneBitPulseLength = 1710
 
 // StandardSpeedDataBlock - ID 10
+// @TODO: Seems wrong: PacMania does not load
 type StandardSpeedDataBlock struct {
 	pauseAfterBlock int
 	dataSize        int
@@ -63,18 +68,23 @@ func (s *StandardSpeedDataBlock) Pulses() []Pulse {
 	pulses := make([]Pulse, 0)
 	level := false
 
+	pilotToneLength := StandardHeaderPilotToneLength
+	if s.data[0] >= 128 {
+		pilotToneLength = StandardDataPilotToneLength
+	}
+
 	// Generate pilot tone
-	for i := 0; i < StandardPilotToneLength; i++ {
-		pulses = append(pulses, Pulse{Length: StandardOneBitPulseLength, Level: level})
+	for i := 0; i < pilotToneLength; i++ {
+		pulses = append(pulses, Pulse{Length: StandardPilotPulseLength, Level: level})
 		level = !level
 	}
 	pulses = append(pulses, []Pulse{
 		{
-			Length: StandardZeroBitPulseLength,
+			Length: StandardFirstSyncPulseLength,
 			Level:  level,
 		},
 		{
-			Length: StandardZeroBitPulseLength,
+			Length: StandardSecondSyncPulseLength,
 			Level:  !level,
 		},
 	}...)
