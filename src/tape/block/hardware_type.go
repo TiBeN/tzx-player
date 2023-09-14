@@ -12,7 +12,7 @@ type HardwareTypeIds struct {
 
 var HardwareList map[byte]HardwareTypeIds
 
-var hardwareInfosDescription map[byte]string
+var HardwareInfosDescription map[byte]string
 
 func init() {
 	HardwareList = map[byte]HardwareTypeIds{
@@ -239,7 +239,7 @@ func init() {
 		},
 	}
 
-	hardwareInfosDescription = map[byte]string{
+	HardwareInfosDescription = map[byte]string{
 		0x00: "The tape RUNS on this machine or with this hardware, but may or may not use the hardware or special features of the machine.",
 		0x01: "The tape USES the hardware or special features of the machine, such as extra memory or a sound chip.",
 		0x02: "The tape RUNS but it DOESN'T use the hardware or special features of the machine.",
