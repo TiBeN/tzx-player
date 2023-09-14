@@ -63,6 +63,8 @@ func NewBlock(id byte, tzxFile *os.File) (Block, error) {
 		block = &TextDescription{}
 	case 0x31:
 		block = &MessageBlock{}
+	case 0x32:
+		block = &ArchiveInfo{}
 	case 0x33:
 		block = &HardwareType{}
 	default:
