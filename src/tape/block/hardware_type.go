@@ -294,7 +294,7 @@ func (h *HardwareType) Info() [][]string {
 			fmt.Sprintf(
 				"%s (%s)",
 				HardwareList[t.hwType].hardwareIds[t.id],
-				HardwareList[t.hwType].hardwareIds[t.info],
+				HardwareInfosDescription[t.info],
 			)})
 	}
 	return info
