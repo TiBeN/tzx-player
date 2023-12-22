@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 // PureDataBlock - ID 14
@@ -65,16 +66,15 @@ func (p *PureDataBlock) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (p *PureDataBlock) Info() string {
-	return fmt.Sprintf(
-		"[bit 0 p.: %dt, bit 1 p.: %dt, last byte used: %d, data size: %d, flag: %x, after pause: %dms]",
-		p.zeroBitPulseLength,
-		p.oneBitPulseLength,
-		p.lastByteBitsUsed,
-		p.dataSize,
-		p.dataFlag,
-		p.pauseAfterBlock,
-	)
+func (p *PureDataBlock) Info() [][]string {
+	return [][]string{
+		{"ZERO bit pulse length", strconv.Itoa(p.zeroBitPulseLength)},
+		{"ONE bit pulse length", strconv.Itoa(p.oneBitPulseLength)},
+		{"Used bits in last byte", strconv.Itoa(p.lastByteBitsUsed)},
+		{"Pause after block", fmt.Sprintf("%d ms", p.pauseAfterBlock)},
+		{"Data length", strconv.Itoa(p.dataSize)},
+		{"Data flag byte", fmt.Sprintf("%x", p.dataFlag)},
+	}
 }
 
 func (p *PureDataBlock) Pulses() []Pulse {

@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 // TurboSpeedDataBlock - ID 11
@@ -95,20 +96,19 @@ func (t *TurboSpeedDataBlock) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (t *TurboSpeedDataBlock) Info() string {
-	return fmt.Sprintf(
-		"[pilot p.: %dt, pilot tone length: %d, sync 1 p.: %dt, sync 2 p.: %dt, bit 0 p.: %dt, bit 1 p.: %dt, last byte used: %d, data size: %d, flag: %x, after pause: %dms]",
-		t.pilotPulseLength,
-		t.pilotToneLength,
-		t.syncFirstPulseLength,
-		t.syncSecondPulseLength,
-		t.zeroBitPulseLength,
-		t.oneBitPulseLength,
-		t.lastByteBitsUsed,
-		t.dataSize,
-		t.dataFlag,
-		t.pauseAfterBlock,
-	)
+func (t *TurboSpeedDataBlock) Info() [][]string {
+	return [][]string{
+		{"PILOT pulse length", strconv.Itoa(t.pilotPulseLength)},
+		{"SYNC first pulse length", strconv.Itoa(t.syncFirstPulseLength)},
+		{"SYNC second pulse length", strconv.Itoa(t.syncSecondPulseLength)},
+		{"ZERO bit pulse length", strconv.Itoa(t.zeroBitPulseLength)},
+		{"ONE bit pulse length", strconv.Itoa(t.oneBitPulseLength)},
+		{"PILOT tone length", strconv.Itoa(t.pilotToneLength)},
+		{"Used bits in last byte", strconv.Itoa(t.lastByteBitsUsed)},
+		{"Pause after block", fmt.Sprintf("%d ms", t.pauseAfterBlock)},
+		{"Data length", strconv.Itoa(t.dataSize)},
+		{"Data flag byte", fmt.Sprintf("%x", t.dataFlag)},
+	}
 }
 
 func (t *TurboSpeedDataBlock) Pulses() []Pulse {

@@ -1,7 +1,6 @@
 package block
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -31,8 +30,10 @@ func (t *TextDescription) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (t *TextDescription) Info() string {
-	return fmt.Sprintf("[description: %s]", t.description)
+func (t *TextDescription) Info() [][]string {
+	return [][]string{
+		{"Description", t.description},
+	}
 }
 
 func (t *TextDescription) Pulses() []Pulse {

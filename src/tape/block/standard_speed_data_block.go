@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 const StandardHeaderPilotToneLength = 8063
@@ -54,13 +55,12 @@ func (s *StandardSpeedDataBlock) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (s *StandardSpeedDataBlock) Info() string {
-	return fmt.Sprintf(
-		"[data size: %d, flag: %x, after pause: %dms]",
-		s.dataSize,
-		s.dataFlag,
-		s.pauseAfterBlock,
-	)
+func (s *StandardSpeedDataBlock) Info() [][]string {
+	return [][]string{
+		{"Pause after block", fmt.Sprintf("%d ms", s.pauseAfterBlock)},
+		{"Data length", strconv.Itoa(s.dataSize)},
+		{"Data flag byte", fmt.Sprintf("%x", s.dataFlag)},
+	}
 }
 
 func (s *StandardSpeedDataBlock) Pulses() []Pulse {

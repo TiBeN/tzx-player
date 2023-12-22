@@ -286,21 +286,18 @@ func (h *HardwareType) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (h *HardwareType) Info() string {
-	info := "["
-	for i, hwInfo := range h.hardwareInfos {
-		info += fmt.Sprintf(
-			"machine %d: %s (%s)",
-			i,
-			HardwareList[hwInfo.hwType].hardwareIds[hwInfo.id],
-			HardwareList[hwInfo.hwType].name,
-		)
-		if i < len(h.hardwareInfos)-1 {
-			info += ", "
-		}
+func (h *HardwareType) Info() [][]string {
+	info := make([][]string, 0)
+	for _, t := range h.hardwareInfos {
+		info = append(info, []string{
+			HardwareList[t.hwType].name,
+			fmt.Sprintf(
+				"%s (%s)",
+				HardwareList[t.hwType].hardwareIds[t.id],
+				HardwareList[t.hwType].hardwareIds[t.info],
+			)})
 	}
-
-	return info + "]"
+	return info
 }
 
 func (h *HardwareType) Pulses() []Pulse {

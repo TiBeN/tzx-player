@@ -40,8 +40,11 @@ func (m *MessageBlock) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (m *MessageBlock) Info() string {
-	return fmt.Sprintf("[display duration: %d, message: %s]", m.displayDuration, m.message)
+func (m *MessageBlock) Info() [][]string {
+	return [][]string{
+		{"Display duration", fmt.Sprintf("%d s", m.displayDuration)},
+		{"Message", m.message},
+	}
 }
 
 func (m *MessageBlock) Pulses() []Pulse {

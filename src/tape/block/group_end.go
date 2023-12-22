@@ -18,8 +18,8 @@ func (g *GroupEnd) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (g *GroupEnd) Info() string {
-	return ""
+func (g *GroupEnd) Info() [][]string {
+	return [][]string{}
 }
 
 func (g *GroupEnd) Pulses() []Pulse {

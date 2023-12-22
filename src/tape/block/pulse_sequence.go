@@ -2,8 +2,8 @@ package block
 
 import (
 	"encoding/binary"
-	"fmt"
 	"os"
+	"strconv"
 )
 
 // PulseSequence - ID 13
@@ -35,8 +35,10 @@ func (p *PulseSequence) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (p *PulseSequence) Info() string {
-	return fmt.Sprintf("[pulses  nb: %d]", p.pulsesNb)
+func (p *PulseSequence) Info() [][]string {
+	return [][]string{
+		{"Pulses number", strconv.Itoa(p.pulsesNb)},
+	}
 }
 
 func (p *PulseSequence) Pulses() []Pulse {

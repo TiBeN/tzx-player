@@ -2,10 +2,8 @@ package block
 
 import (
 	"encoding/binary"
-	"fmt"
-	"os"
-
 	"golang.org/x/text/encoding/charmap"
+	"os"
 )
 
 var TextIds map[byte]string
@@ -52,8 +50,6 @@ func (a *ArchiveInfo) Read(tzxFile *os.File) error {
 		return err
 	}
 
-	fmt.Println(textNb)
-
 	for i := 0; i < int(textNb); i++ {
 		text := Text{}
 
@@ -87,17 +83,12 @@ func (a *ArchiveInfo) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (a *ArchiveInfo) Info() string {
-	info := "["
-
-	for i, text := range a.texts {
-		info += fmt.Sprintf("id: %s, text: %s", TextIds[text.textId], text.text)
-		if i < len(a.texts)-1 {
-			info += ", "
-		}
+func (a *ArchiveInfo) Info() [][]string {
+	info := make([][]string, 0)
+	for _, t := range a.texts {
+		info = append(info, []string{TextIds[t.textId], t.text})
 	}
-
-	return info + "]"
+	return info
 }
 
 func (a *ArchiveInfo) Pulses() []Pulse {

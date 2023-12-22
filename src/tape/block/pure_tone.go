@@ -2,8 +2,8 @@ package block
 
 import (
 	"encoding/binary"
-	"fmt"
 	"os"
+	"strconv"
 )
 
 // PureTone - ID 12
@@ -36,8 +36,11 @@ func (p *PureTone) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (p *PureTone) Info() string {
-	return fmt.Sprintf("[pulse length: %d, pulses number: %d]", p.onePulseLength, p.pulsesNb)
+func (p *PureTone) Info() [][]string {
+	return [][]string{
+		{"One pulse length", strconv.Itoa(p.onePulseLength)},
+		{"Number of pulses", strconv.Itoa(p.pulsesNb)},
+	}
 }
 
 func (p *PureTone) Pulses() []Pulse {

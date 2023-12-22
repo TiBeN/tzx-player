@@ -19,8 +19,10 @@ type Block interface {
 	// at the beginning of the block data (just after the block ID byte)
 	Read(tzxFile *os.File) error
 
-	// Info returns information about this block
-	Info() string
+	// Info returns information about this block.
+	// Each parameter is given in a key/value string pair. string[0] is
+	// the key, string[1] is the value
+	Info() [][]string
 
 	// Pulses generates and returns the pulses of this block
 	Pulses() []Pulse

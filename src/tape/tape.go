@@ -6,6 +6,7 @@ import (
 	"github.com/TiBeN/tzx-player/tape/block"
 	"io"
 	"os"
+	"strconv"
 )
 
 const TzxSignature = "ZXTape!"
@@ -42,14 +43,30 @@ func NewTape(tzxFile string) (*Tape, error) {
 	return &tape, nil
 }
 
+type TapeInfo struct {
+	Version string
+	Blocks  [][][]string
+}
+
 // Info returns information about the tape
-func (t *Tape) Info() []string {
-	infos := make([]string, len(t.Blocks)+1)
-	infos[0] = fmt.Sprintf("TZX tape, version %d.%d", t.Header.MajorVersion, t.Header.MinorVersion)
-	for nb, b := range t.Blocks {
-		infos[nb+1] = fmt.Sprintf("Block %d: %s %s", nb, b.Name(), b.Info())
+func (t *Tape) Info() TapeInfo {
+	info := TapeInfo{
+		Version: fmt.Sprintf("%d.%d", t.Header.MajorVersion, t.Header.MinorVersion),
 	}
-	return infos
+
+	for i, blk := range t.Blocks {
+		blockInfo := [][]string{
+			{"Block Number", strconv.Itoa(i + 1)},
+			{"Block ID", fmt.Sprintf("%x", blk.Id())},
+			{"Block Type", blk.Name()},
+		}
+		for _, param := range blk.Info() {
+			blockInfo = append(blockInfo, param)
+		}
+		info.Blocks = append(info.Blocks, blockInfo)
+	}
+
+	return info
 }
 
 // Read header data from TZX file

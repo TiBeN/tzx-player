@@ -1,8 +1,8 @@
 package block
 
 import (
-	"fmt"
 	"os"
+	"strconv"
 )
 
 // GroupStart - ID 21
@@ -35,8 +35,11 @@ func (g *GroupStart) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (g *GroupStart) Info() string {
-	return fmt.Sprintf("[name: %s, length: %d]", g.name, g.nameLength)
+func (g *GroupStart) Info() [][]string {
+	return [][]string{
+		{"Group name string length", strconv.Itoa(g.nameLength)},
+		{"Group name", g.name},
+	}
 }
 
 func (g *GroupStart) Pulses() []Pulse {

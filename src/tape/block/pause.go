@@ -28,8 +28,10 @@ func (p *Pause) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (p *Pause) Info() string {
-	return fmt.Sprintf("[duration: %dms]", p.pauseDuration)
+func (p *Pause) Info() [][]string {
+	return [][]string{
+		{"Pause duration", fmt.Sprintf("%d ms", p.pauseDuration)},
+	}
 }
 
 func (p *Pause) Pulses() []Pulse {

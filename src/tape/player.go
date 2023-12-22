@@ -88,7 +88,6 @@ func (p *Player) Start() error {
 }
 
 func (p *Player) TogglePause() {
-	// @TODO rework this to be more reactive
 	p.pause = !p.pause
 }
 

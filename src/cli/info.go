@@ -33,8 +33,13 @@ func (c *Info) Exec(service *tape.Service, args []string) error {
 		return err
 	}
 
-	for _, infoLine := range info {
-		fmt.Println(infoLine)
+	fmt.Printf("%-40s: %s\n", "TZX Tape Version", info.Version)
+
+	for _, block := range info.Blocks {
+		fmt.Println("")
+		for _, params := range block {
+			fmt.Printf("%-40s: %s\n", params[0], params[1])
+		}
 	}
 
 	return nil

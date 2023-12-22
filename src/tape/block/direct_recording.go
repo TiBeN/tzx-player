@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 // DirectRecording - ID 15
@@ -57,14 +58,13 @@ func (d *DirectRecording) Read(tzxFile *os.File) error {
 	return nil
 }
 
-func (d *DirectRecording) Info() string {
-	return fmt.Sprintf(
-		"[nb t-states per sample.: %d, last byte used: %d, samples data size: %d, after pause: %dms]",
-		d.nbTstatePerSample,
-		d.lastByteBitsUsed,
-		d.samplesDataSize,
-		d.pauseAfterBlock,
-	)
+func (d *DirectRecording) Info() [][]string {
+	return [][]string{
+		{"Number of T-states per sample", strconv.Itoa(d.nbTstatePerSample)},
+		{"Pause after block", fmt.Sprintf("%d ms", d.pauseAfterBlock)},
+		{"Used bits in last byte", strconv.Itoa(d.lastByteBitsUsed)},
+		{"Samples 'data length", strconv.Itoa(d.samplesDataSize)},
+	}
 }
 
 func (d *DirectRecording) Pulses() []Pulse {

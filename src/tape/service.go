@@ -44,12 +44,13 @@ func (s *Service) ConvertToWavFile(tzxFile string, outputFile string, samplingRa
 }
 
 // Info returns information about a TZX tape file (version, blocks etc.)
-func (s *Service) Info(tzxFile string) ([]string, error) {
+func (s *Service) Info(tzxFile string) (*TapeInfo, error) {
 	tape, err := NewTape(tzxFile)
 	if err != nil {
 		return nil, err
 	}
-	return tape.Info(), nil
+	info := tape.Info()
+	return &info, nil
 }
 
 // Play plays a TZX file through audio sound card
