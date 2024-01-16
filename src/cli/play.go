@@ -31,13 +31,17 @@ func (c *Play) Usage() string {
 	usage += fmt.Sprintln("    Options:")
 	usage += fmt.Sprintf("      %-20sSampling rate (default: %d)\n", "-s int", ConvertDefaultSamplingRate)
 	usage += fmt.Sprintf("      %-20sBit depth (default: %d, possibles values: 8 or 16)\n", "-b int", ConvertDefaultBitDepth)
-	usage += fmt.Sprintf("      %-20sEnable tape remote control using a GPIO device. Support only Numato labs GPIO Modules for now. Exemple: -g /dev/ttyACM0:9600:1\n", "-g port:baudrate:ionb")
+	usage += fmt.Sprintf("      %-20sEnable tape remote control using a GPIO device. Support only Numato labs GPIO Modules for now. Exemple: -g /dev/ttyACM0:9600:1\n", "-g port:baud:ionb")
 	usage += fmt.Sprintf("      %-20sSpeed factor: multiply the speed of the tones (experimental) (default: %.1f)\n", "-f float", ConvertDefaultSpeedFactor)
 	usage += fmt.Sprintln("   Player control keystrokes:")
 	usage += fmt.Sprintln("       Space : Toggle play/pause")
+	usage += fmt.Sprintln("       Right arrow : Fast forward")
+	usage += fmt.Sprintln("       Left arrow : Rewind")
+	usage += fmt.Sprintln("       g : Set tape to last saved position")
 	usage += fmt.Sprintln("       p : Pause")
 	usage += fmt.Sprintln("       s : Save current tape position")
 	usage += fmt.Sprintln("       g : Set tape to last saved position")
+
 	return usage
 }
 
