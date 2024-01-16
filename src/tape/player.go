@@ -134,7 +134,7 @@ func (p *Player) SaveCurrentPos() {
 }
 
 // GoToSavedPos set the play position of the tape at the previously stored position
-// with Player.SaveCurrentPos. If no position was previously stored, it rewind the
+// with Player.SaveCurrentPos. If no position was previously stored, it rewinds the
 // tape to beginning.
 func (p *Player) GoToSavedPos() error {
 	_, err := p.reader.Seek(p.savedPos, 0)

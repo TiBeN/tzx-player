@@ -82,7 +82,6 @@ func (r *Reader) FileName() string {
 	return r.tape.FileName
 }
 
-// @TODO: don't return formated data but data struct
 // @TODO: return the block id
 func (r *Reader) BlockInfo() string {
 	currentByteNb := r.Pos()
@@ -134,7 +133,7 @@ func (r *Reader) pulsesToSamples(pulses []block.Pulse) []byte {
 	return samples
 }
 
-// pauseToSamples generates an silence as audio PCM samples of given duration in ms
+// pauseToSamples generates a silence as audio PCM samples of the given duration in ms
 func (r *Reader) pauseToSamples(duration int) []byte {
 	nbSamples := duration * (r.SamplingRate / 1000)
 	samples := make([]byte, 0)
@@ -145,7 +144,6 @@ func (r *Reader) pauseToSamples(duration int) []byte {
 }
 
 // sampleValue returns the audio PCM sample equivalent of a low level or high level
-// according to the
 func (r *Reader) sampleValue(level bool) []byte {
 	if r.bitDepth == 8 {
 		if !level {

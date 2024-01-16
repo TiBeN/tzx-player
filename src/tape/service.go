@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Service is the main interface for actions related to a TZX Tape
+// Service is the main entry point for actions related to a TZX Tape
 type Service struct{}
 
 func NewService() *Service {

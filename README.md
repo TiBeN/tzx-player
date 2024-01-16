@@ -21,11 +21,12 @@ WIP state:
   Numato Labs 8 channels, does not support standard kernel libgpiod framework and expose a proprietary 
   command set which requires specific code.
 
-Build: 
+Build
+-----
 
     $ ./build.sh
 
-exec: 
+exec 
 
     $ ./bin/tzx-player COMMAND
  
@@ -33,7 +34,8 @@ or to show usage
 
     $ ./bin/tzx-player COMMAND
 
-Usage:
+Usage
+-----
 
 ```
 Usage: tzx-player COMMAND [cmd opts]
@@ -68,3 +70,8 @@ Commands:
 ```
 
 This project is written in Go. It makes use of PortAudio library for audio output.
+
+Resources
+---------
+
+The TZX tape file format specification is available [here](https://k1.spdns.de/Develop/Projects/zasm/Info/TZX%20format.html)
