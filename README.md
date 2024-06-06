@@ -32,7 +32,7 @@ exec
  
 or to show usage 
 
-    $ ./bin/tzx-player COMMAND
+    $ ./bin/tzx-player help
 
 Usage
 -----
