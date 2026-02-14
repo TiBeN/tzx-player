@@ -17,7 +17,7 @@ jobs:
           cache-dependency-path: src/go.sum
 
       - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libportaudio-dev mingw-w64
+        run: sudo apt-get update && sudo apt-get install -y portaudio19-dev mingw-w64
 
       - name: Build Linux binary
         working-directory: src
