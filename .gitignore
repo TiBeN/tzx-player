@@ -1,3 +1,4 @@
-/bin/tzx-player
+/bin/
 /tmp/
 /src/.go/
+/win-deps/

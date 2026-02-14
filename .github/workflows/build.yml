@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.20"
+          cache-dependency-path: src/go.sum
+
+      - name: Install system dependencies
+        run: sudo apt-get update && sudo apt-get install -y libportaudio-dev mingw-w64
+
+      - name: Build Linux binary
+        working-directory: src
+        run: GOOS=linux GOARCH=amd64 go build -o ../bin/tzx-player
+
+      - name: Build Windows binary
+        run: |
+          # Download and cross-compile PortAudio for Windows
+          mkdir -p win-deps
+          curl -L -o win-deps/portaudio.tar.gz \
+            "https://github.com/PortAudio/portaudio/archive/refs/tags/v19.7.0.tar.gz"
+          tar xzf win-deps/portaudio.tar.gz -C win-deps
+          cd win-deps/portaudio-19.7.0
+          ./configure --host=x86_64-w64-mingw32 --prefix="$GITHUB_WORKSPACE/win-deps/portaudio" \
+            --enable-static --disable-shared
+          make
+          make install
+          cd "$GITHUB_WORKSPACE/src"
+          CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc \
+            PKG_CONFIG_PATH="$GITHUB_WORKSPACE/win-deps/portaudio/lib/pkgconfig" \
+            CGO_LDFLAGS="-static" \
+            go build -o ../bin/tzx-player.exe
+
+      - name: Upload Linux binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: tzx-player-linux-amd64
+          path: bin/tzx-player
+
+      - name: Upload Windows binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: tzx-player-windows-amd64
+          path: bin/tzx-player.exe
